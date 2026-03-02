@@ -1,0 +1,498 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* DARK MODE ONLY */
+:root {
+  --button-outline: rgba(255,255,255, .10);
+  --badge-outline: rgba(255,255,255, .05);
+
+  --opaque-button-border-intensity: 9;  /* In terms of percentages */
+
+  /* Backgrounds applied on top of other backgrounds when hovered/active */
+  --elevate-1: rgba(255,255,255, .04);
+  --elevate-2: rgba(255,255,255, .09);
+
+  --background: 0 0% 8%;
+
+  --foreground: 0 0% 95%;
+
+  --border: 0 0% 18%;
+
+  --card: 0 0% 10%;
+
+  --card-foreground: 0 0% 95%;
+
+  --card-border: 0 0% 14%;
+
+  --sidebar: 0 0% 12%;
+
+  --sidebar-foreground: 0 0% 95%;
+
+  --sidebar-border: 0 0% 16%;
+
+  --sidebar-primary: 211 100% 60%;
+
+  --sidebar-primary-foreground: 0 0% 100%;
+
+  --sidebar-accent: 0 0% 16%;
+
+  --sidebar-accent-foreground: 0 0% 95%;
+
+  --sidebar-ring: 211 100% 60%;
+
+  --popover: 0 0% 14%;
+
+  --popover-foreground: 0 0% 95%;
+
+  --popover-border: 0 0% 18%;
+
+  --primary: 211 100% 55%;
+
+  --primary-foreground: 0 0% 100%;
+
+  --secondary: 0 0% 18%;
+
+  --secondary-foreground: 0 0% 95%;
+
+  --muted: 0 0% 16%;
+
+  --muted-foreground: 0 0% 65%;
+
+  --accent: 0 0% 20%;
+
+  --accent-foreground: 0 0% 95%;
+
+  --destructive: 0 84% 60%;
+
+  --destructive-foreground: 0 0% 100%;
+
+  --input: 0 0% 24%;
+  --ring: 211 100% 60%;
+  --chart-1: 211 100% 65%;
+  --chart-2: 142 71% 55%;
+  --chart-3: 25 95% 63%;
+  --chart-4: 271 81% 66%;
+  --chart-5: 340 82% 62%;
+
+  --shadow-2xs: 0px 1px 2px 0px hsl(0 0% 0% / 0.20);
+  --shadow-xs: 0px 1px 3px 0px hsl(0 0% 0% / 0.30);
+  --shadow-sm: 0px 2px 4px -1px hsl(0 0% 0% / 0.35), 0px 1px 2px -1px hsl(0 0% 0% / 0.25);
+  --shadow: 0px 2px 8px 0px hsl(0 0% 0% / 0.40), 0px 1px 3px -1px hsl(0 0% 0% / 0.30);
+  --shadow-md: 0px 4px 12px -2px hsl(0 0% 0% / 0.45), 0px 2px 4px -1px hsl(0 0% 0% / 0.35);
+  --shadow-lg: 0px 8px 20px -4px hsl(0 0% 0% / 0.50), 0px 4px 8px -2px hsl(0 0% 0% / 0.40);
+  --shadow-xl: 0px 16px 32px -8px hsl(0 0% 0% / 0.55), 0px 8px 16px -4px hsl(0 0% 0% / 0.45);
+  --shadow-2xl: 0px 24px 48px -12px hsl(0 0% 0% / 0.60);
+
+  /* Automatically computed borders - intensity can be controlled by the user by the --opaque-button-border-intensity setting */
+  --sidebar-primary-border: hsl(from hsl(var(--sidebar-primary)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+  --sidebar-accent-border: hsl(from hsl(var(--sidebar-accent)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+  --primary-border: hsl(from hsl(var(--primary)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+  --secondary-border: hsl(from hsl(var(--secondary)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+  --muted-border: hsl(from hsl(var(--muted)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+  --accent-border: hsl(from hsl(var(--accent)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+  --destructive-border: hsl(from hsl(var(--destructive)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-serif: Georgia, serif;
+  --font-mono: "SF Mono", "Fira Code", "Menlo", monospace;
+  --radius: .75rem;
+  --tracking-normal: 0em;
+  --spacing: 0.25rem;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  /* Remove focus rings globally */
+  *:focus,
+  *:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Consistent icon-text spacing in buttons and interactive elements */
+  .icon-text-gap {
+    gap: 0.5rem;
+  }
+}
+
+/**
+ * Using the elevate system.
+ * Automatic contrast adjustment.
+ *
+ * <element className="hover-elevate" />
+ * <element className="active-elevate-2" />
+ *
+ * // Using the tailwind utility when a data attribute is "on"
+ * <element className="toggle-elevate data-[state=on]:toggle-elevated" />
+ * // Or manually controlling the toggle state
+ * <element className="toggle-elevate toggle-elevated" />
+ *
+ * Elevation systems have to handle many states.
+ * - not-hovered, vs. hovered vs. active  (three mutually exclusive states)
+ * - toggled or not
+ * - focused or not (this is not handled with these utilities)
+ *
+ * Even without handling focused or not, this is six possible combinations that
+ * need to be distinguished from eachother visually.
+ */
+@layer utilities {
+
+  /* Hide ugly search cancel button in Chrome until we can style it properly */
+  input[type="search"]::-webkit-search-cancel-button {
+    @apply hidden;
+  }
+
+  /* Placeholder styling for contentEditable div */
+  [contenteditable][data-placeholder]:empty::before {
+    content: attr(data-placeholder);
+    color: hsl(var(--muted-foreground));
+    pointer-events: none;
+  }
+
+  /* .no-default-hover-elevate/no-default-active-elevate is an escape hatch so consumers of
+   * buttons/badges can remove the automatic brightness adjustment on interactions
+   * and program their own. */
+  .no-default-hover-elevate {}
+
+  .no-default-active-elevate {}
+
+
+  /**
+   * Toggleable backgrounds go behind the content. Hoverable/active goes on top.
+   * This way they can stack/compound. Both will overlap the parent's borders!
+   * So borders will be automatically adjusted both on toggle, and hover/active,
+   * and they will be compounded.
+   */
+  .toggle-elevate::before,
+  .toggle-elevate-2::before {
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    inset: 0px;
+    border-radius: inherit;
+    z-index: -1;
+  }
+
+  .toggle-elevate.toggle-elevated::before {
+    background-color: var(--elevate-2);
+  }
+
+  /* If there's a 1px border, adjust the inset so that it covers that parent's border */
+  .border.toggle-elevate::before {
+    inset: -1px;
+  }
+
+  /* Does not work on elements with overflow:hidden! */
+  .hover-elevate:not(.no-default-hover-elevate),
+  .active-elevate:not(.no-default-active-elevate),
+  .hover-elevate-2:not(.no-default-hover-elevate),
+  .active-elevate-2:not(.no-default-active-elevate) {
+    position: relative;
+    z-index: 0;
+  }
+
+  .hover-elevate:not(.no-default-hover-elevate)::after,
+  .active-elevate:not(.no-default-active-elevate)::after,
+  .hover-elevate-2:not(.no-default-hover-elevate)::after,
+  .active-elevate-2:not(.no-default-active-elevate)::after {
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    inset: 0px;
+    border-radius: inherit;
+    z-index: 999;
+  }
+
+  .hover-elevate:hover:not(.no-default-hover-elevate)::after,
+  .active-elevate:active:not(.no-default-active-elevate)::after {
+    background-color: var(--elevate-1);
+  }
+
+  .hover-elevate-2:hover:not(.no-default-hover-elevate)::after,
+  .active-elevate-2:active:not(.no-default-active-elevate)::after {
+    background-color: var(--elevate-2);
+  }
+
+  /* If there's a 1px border, adjust the inset so that it covers that parent's border */
+  .border.hover-elevate:not(.no-hover-interaction-elevate)::after,
+  .border.active-elevate:not(.no-active-interaction-elevate)::after,
+  .border.hover-elevate-2:not(.no-hover-interaction-elevate)::after,
+  .border.active-elevate-2:not(.no-active-interaction-elevate)::after,
+  .border.hover-elevate:not(.no-hover-interaction-elevate)::after {
+    inset: -1px;
+  }
+
+  /* 144fps Hardware Acceleration Optimizations */
+  * {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Force GPU compositing for smooth animations */
+  .hover-elevate::after,
+  .active-elevate::after,
+  .hover-elevate-2::after,
+  .active-elevate-2::after,
+  .toggle-elevate::before,
+  .toggle-elevate-2::before {
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+    will-change: opacity, background-color;
+  }
+
+  /* Optimize scrolling performance */
+  * {
+    scroll-behavior: smooth;
+  }
+  
+  @media (prefers-reduced-motion: no-preference) {
+    * {
+      transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    }
+  }
+
+  /* GPU-accelerated transforms */
+  [data-draggable="true"],
+  [draggable="true"] {
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    will-change: transform;
+  }
+
+  /* Optimize backdrop-filter performance */
+  [class*="backdrop-blur"] {
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+  }
+
+  /* Tweet embed styling - show full images without cropping */
+  .twitter-tweet,
+  [data-testid^="embedded-tweet"] {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .twitter-tweet {
+    margin: 0 !important;
+  }
+
+  /* Force Twitter images to show full aspect ratio - no cropping */
+  .twitter-tweet img,
+  [data-testid^="embedded-tweet"] img {
+    width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+    object-fit: contain !important;
+    object-position: center !important;
+    border-radius: 12px !important;
+    aspect-ratio: auto !important;
+  }
+
+  /* Remove Twitter's image container height restrictions */
+  .twitter-tweet [data-testid="card.wrapper"],
+  .twitter-tweet [data-testid="tweetPhoto"],
+  .twitter-tweet [aria-label*="Image"],
+  .twitter-tweet div[style*="padding-bottom"],
+  [data-testid^="embedded-tweet"] div[style*="padding-bottom"] {
+    width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+    padding-bottom: 0 !important;
+    aspect-ratio: auto !important;
+  }
+
+  /* Twitter media container - allow natural height */
+  .twitter-tweet article div[data-testid="tweetPhoto"],
+  .twitter-tweet div[role="link"] {
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  /* Ensure Twitter iframe fits container */
+  .twitter-tweet-rendered iframe,
+  [data-testid^="embedded-tweet"] iframe {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Instagram embed styling - dark mode, natural aspect ratios */
+  .instagram-embed-container {
+    width: 100%;
+  }
+
+  .instagram-embed-container blockquote,
+  .instagram-embed-container .instagram-media {
+    margin: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: unset !important;
+    background: #1a1a1a !important;
+    border-radius: 16px !important;
+    overflow: hidden !important;
+  }
+
+  .instagram-embed-container iframe {
+    width: 100% !important;
+    max-width: 100% !important;
+    border-radius: 16px !important;
+  }
+
+  /* Instagram images respect natural aspect ratio */
+  .instagram-embed-container img {
+    width: 100% !important;
+    height: auto !important;
+    object-fit: contain !important;
+  }
+
+  /* Override Instagram's default white background */
+  .instagram-media::after {
+    background: #1a1a1a !important;
+  }
+
+  /* Masonry grid embed fit */
+  .break-inside-avoid .twitter-tweet,
+  .break-inside-avoid .instagram-media,
+  .break-inside-avoid [data-testid^="embedded-tweet"],
+  .break-inside-avoid [data-testid^="embedded-instagram"] {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Custom focus styling - subtle but accessible */
+  input:focus,
+  textarea:focus,
+  [contenteditable]:focus {
+    outline: none;
+  }
+
+  input:focus-visible,
+  textarea:focus-visible,
+  [contenteditable]:focus-visible {
+    outline: 2px solid rgba(255, 255, 255, 0.15);
+    outline-offset: 2px;
+  }
+
+  /* Calm fade-in animation for preview switching */
+  @keyframes fadeInCalm {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  .animate-fade-in-calm {
+    animation: fadeInCalm 0.7s ease-in-out forwards;
+  }
+}
+
+/* Hidden scrollbar - still scrollable */
+::-webkit-scrollbar {
+  width: 0px;
+  height: 0px;
+  display: none;
+}
+
+/* Firefox */
+*:not(.scrollbar-thin):not(.profile-scrollbar) {
+  scrollbar-width: none;
+}
+
+/* Custom scrollbar styles for scrollbar-thin class */
+.scrollbar-thin {
+  scrollbar-width: thin !important;
+  scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px !important;
+  height: 6px !important;
+  display: block !important;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-radius: 3px !important;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Profile preview scrollbar - minimal transparent style */
+.profile-scrollbar {
+  scrollbar-width: thin !important;
+  scrollbar-color: transparent transparent;
+}
+
+.profile-scrollbar::-webkit-scrollbar {
+  width: 4px !important;
+  display: block !important;
+}
+
+.profile-scrollbar::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+
+.profile-scrollbar::-webkit-scrollbar-thumb {
+  background: transparent !important;
+  border-radius: 2px !important;
+  transition: background 0.2s ease;
+}
+
+.profile-scrollbar:hover::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15) !important;
+}
+
+.profile-scrollbar:hover {
+  scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+}
+
+/* Audio ticker animation for IG Reels */
+@keyframes audioTicker {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.audio-ticker {
+  display: inline-block;
+  white-space: nowrap;
+  animation: audioTicker 6s linear infinite;
+}
+
+.audio-ticker-container {
+  position: relative;
+  overflow: hidden;
+  mask-image: linear-gradient(to right, black, black calc(100% - 20px), transparent);
+  -webkit-mask-image: linear-gradient(to right, black, black calc(100% - 20px), transparent);
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateY(-6px); }
+  12% { opacity: 1; transform: translateY(0); }
+  80% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(6px); }
+}
+
